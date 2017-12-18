@@ -36,7 +36,7 @@
               <button class="opcoesDoCartao-remove opcoesDoCartao-opcao">
                 <svg><use xlink:href="#iconeRemover"></use></svg>
               </button>
-    
+                  
               <input type="radio" name="corDoCartao${numeroDoCartao}" value="#EBEF40" id="corPadrão-cartao${numeroDoCartao}" class="opcoesDoCartao-radioTipo" checked>
               <label for="corPadrão-cartao${numeroDoCartao}" class="opcoesDoCartao-tipo opcoesDoCartao-opcao" style="color: #EBEF40;" tabindex="0">
                 Padrão
