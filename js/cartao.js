@@ -1,62 +1,86 @@
+let numeroDoCartao = 0
 
-;(function () {
-    const cartoes = document.querySelectorAll(".cartao");
+//Adicionando cartão
+function criaCartao({conteudo, cor}) {
 
-    for (let i = 0; i < cartoes.length; i++) {
-        const cartao = cartoes[i];
-        //Focus in
-        cartao.addEventListener("focusin", function () {
-            cartao.classList.add("cartao--focado");
-        })
-        //Focus out
-        cartao.addEventListener("focusout", function () {
-            cartao.classList.remove("cartao--focado");
-        })
+    numeroDoCartao++;            
+    const cartao = $(`
+    <article id="cartao_${numeroDoCartao}" class="cartao" tabindex="0" style="background-color:${cor}">
+    <div class="opcoesDoCartao">
+    <button class="opcoesDoCartao-remove opcoesDoCartao-opcao">
+    <svg><use xlink:href="#iconeRemover"></use></svg>
+    </button>
+    
+    <input type="radio" name="corDoCartao${numeroDoCartao}" value="#EBEF40" id="corPadrão-cartao${numeroDoCartao}" class="opcoesDoCartao-radioTipo" checked>
+    <label for="corPadrão-cartao${numeroDoCartao}" class="opcoesDoCartao-tipo opcoesDoCartao-opcao" style="color: #EBEF40;" tabindex="0">
+    Padrão
+    </label>
+    
+    <input type="radio" name="corDoCartao${numeroDoCartao}" value="#F05450" id="corImportante-cartao${numeroDoCartao}" class="opcoesDoCartao-radioTipo">
+    <label for="corImportante-cartao${numeroDoCartao}" class="opcoesDoCartao-tipo opcoesDoCartao-opcao" style="color: #F05450;" tabindex="0">
+    Importante
+    </label>
+    
+    <input type="radio" name="corDoCartao${numeroDoCartao}" value="#92C4EC" id="corTarefa-cartao${numeroDoCartao}" class="opcoesDoCartao-radioTipo">
+    <label for="corTarefa-cartao${numeroDoCartao}" class="opcoesDoCartao-tipo opcoesDoCartao-opcao" style="color: #92C4EC;" tabindex="0">
+    Tarefa
+    </label>
+    
+    <input type="radio" name="corDoCartao${numeroDoCartao}" value="#76EF40" id="corInspiração-cartao${numeroDoCartao}" class="opcoesDoCartao-radioTipo">
+    <label for="corInspiração-cartao${numeroDoCartao}" class="opcoesDoCartao-tipo opcoesDoCartao-opcao" style="color: #76EF40;" tabindex="0">
+    Inspiração
+    </label>
+    </div>
+    <p class="cartao-conteudo" contenteditable tabindex="0">${conteudo}</p>
+    </article>`
+    )
 
-        //Mudando cor do cartão
-        cartao.addEventListener("change", function (event) {
-            //Reduz os eventos da Pagina//Delegação de Eventos (Delegate)
-            const isRadio = event.target
-                                .classList
-                                .contains("opcoesDoCartao-radioTipo");
-            //Se o evento é acionado ele muda a cor
-            if (isRadio) {
-                const cor = event.target.value;
-                cartao.style.backgroundColor = cor;
-            }            
-        })
+    //Focus in
+    cartao.on("focusin", function () {
+        cartao.addClass("cartao--focado");
+    })
+    //Focus out
+    cartao.on("focusout", function () {
+        cartao.removeClass("cartao--focado");
+    })
 
-        //Atalho com btn "Enter" e "Espaço" do teclado
-        cartao.addEventListener("keypress", function (event) {
-            //Delegate
-            const elemetoSelecionado = event.target;
-            const isOpcoesDoCartao = elemetoSelecionado
-                                            .classList
-                                            .contains("opcoesDoCartao-tipo");
-            //Valida se é a tecla "enter" ou "espaço"
-            //verifica se aonde estamos pressionando essas teclas é o Elemento com a classe "OpcoesDoCartao"
-            if (isOpcoesDoCartao && (event.key == " " || event.key == "Enter")) {
-                elemetoSelecionado.click();
-            }
-        })
+    //Mudando cor do cartão
+    cartao.on("change", function (event) {
+        //Reduz os eventos da Pagina//Delegação de Eventos (Delegate)
+        const isRadio = event.target
+        .classList
+        .contains("opcoesDoCartao-radioTipo");
+        //Se o evento é acionado ele muda a cor
+        if (isRadio) {
+            const cor = event.target.value;
+            cartao.css("background-color", cor);
+        }            
+    })
 
-        //Removendo o cartão
-        cartao.addEventListener("click", function(event) {
-            //Pego o cartão e guardo na const cartao
-            const elementoClicado = event.target;
-            const isBtnRemove = elementoClicado
-                                    .classList
-                                    .contains("opcoesDoCartao-remove");
-            
-            if (isBtnRemove) {
-                //Adiciono a classe para dar efeito a remoção do cartao
-                cartao.classList.add("cartao--some"); 
-                //Após finalização do transition, remove o cartão do HTML     
-                cartao.addEventListener("transitionend", function() {
-                    cartao.remove();
-                })
-            }
-        })    
-    }
+    //Atalho com btn "Enter" e "Espaço" do teclado
+    cartao.on("keypress", function (event) {
+        //Delegate
+        const elemetoSelecionado = event.target;
+        const isOpcoesDoCartao = elemetoSelecionado
+        .classList
+        .contains("opcoesDoCartao-tipo");
+        //Valida se é a tecla "enter" ou "espaço"
+        //verifica se aonde estamos pressionando essas teclas é o Elemento com a classe "OpcoesDoCartao"
+        if (isOpcoesDoCartao && (event.key == " " || event.key == "Enter")) {
+            elemetoSelecionado.click();
+        }
+    })
 
-}) ()
+    //Removendo o cartão - Usando Jquery
+    cartao.on("click", ".opcoesDoCartao-remove", function(event) {           
+        //Adiciono a classe para dar efeito a remoção do cartao
+        cartao.addClass("cartao--some"); 
+        //Após finalização do transition, remove o cartão do HTML     
+        cartao.on("transitionend", function() {
+            cartao.remove();
+        })            
+    })
+
+    $(".mural").append(cartao);
+               
+}
