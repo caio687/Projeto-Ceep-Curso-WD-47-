@@ -20,7 +20,7 @@
             cartoes: Array.from(document.querySelectorAll(".cartao")).map(function (cartaoDOM) {
                 return {
                     conteudo: cartaoDOM.querySelector(".cartao-conteudo").textContent,
-                    cor: cartaoDOM.style.background
+                    cor: getComputedStyle(cartaoDOM).getPropertyValue("background-color")
                 };
             })
         };
@@ -28,14 +28,19 @@
         xhrSync.send(JSON.stringify(mural));
 
         xhrSync.addEventListener("load", function () {
-            var response = JSON.parse(xhrSync.response);
+            var response = JSON.parse(xhrSync.response); //Poderia usar xhrSync.response
             console.log(response.quantidade + " cartoes salvos em " + response.usuario);
 
             btnSync.classList.remove("botaoSync--esperando");
             btnSync.classList.add("botaoSync--sincronizado");
         });
 
-        xhrSync.addEventListener("eror", function () {
+        xhrSync.addEventListener("error", function () {
+            btnSync.classList.remove("botaoSync--esperando");
+            btnSync.classList.add("botaoSync--deuRuim");
+        });
+
+        xhrSync.addEventListener("timeout", function () {
             btnSync.classList.remove("botaoSync--esperando");
             btnSync.classList.add("botaoSync--deuRuim");
         });

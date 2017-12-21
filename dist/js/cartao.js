@@ -61,4 +61,32 @@
 
         $(".mural").append(cartao);
     };
+
+    //Forma de chamar os cartões do servidor com jquery
+    /*
+    $.ajax({
+        url: "https://ceep.herokuapp.com/cartoes/carregar"
+        ,method: "GET"
+        ,data: {usuario: "caio"}
+        ,dataType: "jsonp"
+        ,success: function (objeto) {
+            const cartoes = objeto.cartoes
+            cartoes.forEach(function(cartao) {
+                criaCartao(cartao)
+            });
+        }
+    })
+    */
 })();
+
+//Outra forma de chamar os cartões salvos no servidor (Tem que estar fora do IIE)
+var usuario = "caio";
+
+$("<script async src=\"https://ceep.herokuapp.com/cartoes/carregar/?usuario=" + usuario + "&callback=callback\"></script>").appendTo("body");
+
+function callback(json) {
+    var lista = json.cartoes;
+    lista.forEach(function (cartao) {
+        criaCartao(cartao);
+    });
+}
