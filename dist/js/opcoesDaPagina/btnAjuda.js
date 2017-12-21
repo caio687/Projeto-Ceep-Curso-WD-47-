@@ -4,16 +4,21 @@
     var btnAjuda = document.querySelector("#btnAjuda");
 
     btnAjuda.addEventListener("click", function () {
-        var lista = [{
-            conteudo: "Bem vindo!",
-            cor: "#F00"
-        }, {
-            conteudo: "Clique em 'Linhas' para alterar o layout dos cartões",
-            cor: "#0F0"
-        }];
+        var xhr = new XMLHttpRequest(); //Fazedor de request/Pede instruções/XHR
+        xhr.open("GET", "https://ceep.herokuapp.com/cartoes/instrucoes");
+        xhr.responseType = "json";
+        xhr.send();
+        xhr.addEventListener("load", function () {
+            var objeto = xhr.response;
+            var ajudas = objeto.instrucoes;
 
-        lista.forEach(function (instrucao) {
-            criaCartao(instrucao);
+            ajudas.forEach(function (ajuda) {
+                criaCartao(ajuda);
+            });
+        });
+
+        xhr.addEventListener("error", function () {
+            alert("Deu ruim!");
         });
     });
 
